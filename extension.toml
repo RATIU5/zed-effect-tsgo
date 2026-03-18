@@ -1,9 +1,9 @@
 id = "effect-tsgo"
-name = "effect-tsgo"
+name = "Effect TypeScript-Go"
 description = "Effect Language Service for TypeScript — Effect-TS diagnostics powered by @effect/tsgo."
 version = "0.0.1"
 schema_version = 1
-authors = ["Zed Industries <hello@zed.dev>", "RATIU5"]
+authors = ["RATIU5"]
 repository = "https://github.com/RATIU5/zed-effect-tsgo"
 
 [language_servers.effect-tsgo]
