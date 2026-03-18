@@ -135,6 +135,8 @@ impl EffectTsgoExtension {
         let binary_path = Self::get_native_binary_path()
             .map_err(|e| format!("Failed to locate native binary after installation: {}", e))?;
 
+        zed::make_file_executable(binary_path.to_str().unwrap_or_default())?;
+
         // Cache the successful installation
         self.cached_binary_path = Some(binary_path.to_string_lossy().to_string());
         self.cached_version = Some(target_version);
