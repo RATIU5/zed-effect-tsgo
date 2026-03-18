@@ -1,17 +1,17 @@
-# tsgo: Native TypeScript Compiler Integration for Zed
+# effect-tsgo: Effect Language Service for Zed
 
-This extension integrates `tsgo`, Microsoft's native Go-based TypeScript compiler, into the Zed editor, delivering enhanced performance and efficiency for TypeScript development.
+This extension integrates `@effect/tsgo` — the Effect Language Service fork of Microsoft's native Go-based TypeScript compiler — into the Zed editor, providing Effect-TS diagnostics alongside the performance benefits of the native TypeScript compiler.
 
-## 🚀 Why `tsgo`?
+## Why `effect-tsgo`?
 
-Microsoft is transitioning the TypeScript compiler from its JavaScript implementation to a native version written in Go, aiming for significant performance improvements:
+`@effect/tsgo` builds on `tsgo` (Microsoft's native Go port of TypeScript) and adds Effect-TS-specific diagnostics via the `@effect/language-service` plugin. You get:
 
-- **Faster Compilation**: Achieves up to 10x speed improvements in large projects.
-- **Reduced Memory Usage**: Optimized memory handling in native execution.
-- **Improved Editor Performance**: Faster IntelliSense and language services.
-- **Scalability**: Better handling of large codebases.
+- **Effect-TS diagnostics** — Effect-specific rules and hints surfaced directly in the editor
+- **Faster compilation** — up to 10x speed improvements from the native Go compiler
+- **Reduced memory usage** — optimized memory handling in native execution
+- **Improved editor performance** — faster IntelliSense and language services
 
-> _Example Benchmarks_:
+> _Example Benchmarks (tsgo baseline)_:
 >
 > - **VS Code**: 77.8s → 7.5s (10.4x speedup)
 > - **Playwright**: 11.1s → 1.1s (10.1x speedup)
@@ -19,66 +19,68 @@ Microsoft is transitioning the TypeScript compiler from its JavaScript implement
 >
 > _Source: [Microsoft Developer Blog](https://devblogs.microsoft.com/typescript/typescript-native-port/)_
 
-## 🛠 Installation
+## Prerequisites
+
+This extension only manages the LSP binary. For Effect diagnostics to appear, your project must also be configured with the `@effect/language-service` TypeScript plugin. Run the interactive setup in your project directory:
+
+```bash
+npx @effect/tsgo setup
+npm install
+```
+
+The `setup` command configures your `tsconfig.json` and `package.json` automatically.
+
+## Installation
 
 1. Open Zed's Extensions page.
-2. Search for `tsgo` and install the extension.
+2. Search for `effect-tsgo` and install the extension.
 
-## ⚙️ Configuration
-
-_Note_: `tsgo` is currently in preview and may not support all features of the standard `tsc` compiler.
+## Configuration
 
 ### Basic Setup
 
-Enable `tsgo` in your Zed settings:
+Enable `effect-tsgo` in your Zed settings:
 
 ```json
 {
   "languages": {
     "TypeScript": {
-      "language_servers": ["tsgo"]
+      "language_servers": ["effect-tsgo"]
     }
   }
 }
 ```
 
-You can also use `tsgo` in tandem with other language servers (e.g. `typescript-language-server` or `vtsls`). Zed will use `tsgo` for features it supports and fallback to the next language server in the list for unsupported features.
-To do that with `vtsls`, use:
+You can also use `effect-tsgo` in tandem with other language servers. Zed will use `effect-tsgo` for features it supports and fall back to the next server in the list:
 
 ```json
 {
   "languages": {
     "TypeScript": {
-      "language_servers": ["tsgo", "vtsls"]
+      "language_servers": ["effect-tsgo", "vtsls"]
     }
   }
 }
 ```
 
-### Advanced Configuration
+### Pinning a Package Version
 
-#### Specifying a Package Version
-
-By default, the extension installs and uses the latest version of the `@typescript/native-preview` [npm package](https://www.npmjs.com/package/@typescript/native-preview?activeTab=versions). To pin a specific version:
+By default, the extension installs and uses the latest version of `@effect/tsgo` from npm. To pin a specific version:
 
 ```json
 {
   "lsp": {
-    "tsgo": {
+    "effect-tsgo": {
       "settings": {
-        "package_version": "7.0.0-dev.20251029.1"
+        "package_version": "0.0.15"
       }
     }
   }
 }
 ```
 
-This is useful for:
+This is useful for ensuring consistent behavior across a team or avoiding automatic updates.
 
-- Ensuring consistent behavior across the project
-- Testing specific versions
-- Avoiding automatic updates that might introduce issues
+## Status
 
-## 🧪 Status
-
-This extension is in early development stages. While it offers significant performance benefits, some features may be incomplete or unstable. Contributions and feedback are welcome to improve its functionality.
+This extension is in early development. Contributions and feedback are welcome at [https://github.com/RATIU5/zed-effect-tsgo](https://github.com/RATIU5/zed-effect-tsgo).
