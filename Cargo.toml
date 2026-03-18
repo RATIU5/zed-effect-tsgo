@@ -1,6 +1,6 @@
 [package]
-name = "tsgo"
-version = "0.0.4"
+name = "effect-tsgo"
+version = "0.0.1"
 edition = "2024"
 
 [lib]

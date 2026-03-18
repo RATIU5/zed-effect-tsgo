@@ -3,19 +3,19 @@ use std::path::PathBuf;
 
 use zed_extension_api::{self as zed, LanguageServerId, Result, settings::LspSettings};
 
-struct TsGoExtension {
+struct EffectTsgoExtension {
     cached_binary_path: Option<String>,
     cached_version: Option<String>,
 }
 
-const PACKAGE_NAME: &str = "@typescript/native-preview";
+const PACKAGE_NAME: &str = "@effect/tsgo";
 
 #[derive(Debug, Default)]
-struct TsGoSettings {
+struct EffectTsgoSettings {
     package_version: Option<String>,
 }
 
-impl TsGoSettings {
+impl EffectTsgoSettings {
     fn from_lsp_settings(settings: &LspSettings) -> Self {
         let package_version = settings
             .settings
@@ -30,7 +30,7 @@ impl TsGoSettings {
     }
 }
 
-impl TsGoExtension {
+impl EffectTsgoExtension {
     fn get_platform_package_name() -> Result<String> {
         let (platform, arch) = zed::current_platform();
 
@@ -51,7 +51,7 @@ impl TsGoExtension {
             zed::Architecture::X8664 => "x64",
         };
 
-        Ok(format!("@typescript/native-preview-{}-{}", os, arch))
+        Ok(format!("@effect/tsgo-{}-{}", os, arch))
     }
 
     fn get_native_binary_path() -> Result<PathBuf> {
@@ -160,7 +160,7 @@ impl TsGoExtension {
     }
 }
 
-impl zed::Extension for TsGoExtension {
+impl zed::Extension for EffectTsgoExtension {
     fn new() -> Self {
         Self {
             cached_binary_path: None,
@@ -173,7 +173,7 @@ impl zed::Extension for TsGoExtension {
         language_server_id: &zed_extension_api::LanguageServerId,
         worktree: &zed_extension_api::Worktree,
     ) -> zed_extension_api::Result<zed_extension_api::Command> {
-        let lsp_settings = LspSettings::for_worktree("tsgo", worktree).ok();
+        let lsp_settings = LspSettings::for_worktree("effect-tsgo", worktree).ok();
         
         let env = lsp_settings
             .as_ref()
@@ -182,7 +182,7 @@ impl zed::Extension for TsGoExtension {
 
         let settings = lsp_settings
             .as_ref()
-            .map(|s| TsGoSettings::from_lsp_settings(s))
+            .map(|s| EffectTsgoSettings::from_lsp_settings(s))
             .unwrap_or_default();
 
         let package_version = settings.package_version.as_deref();
@@ -224,4 +224,4 @@ impl zed::Extension for TsGoExtension {
     }
 }
 
-zed::register_extension!(TsGoExtension);
+zed::register_extension!(EffectTsgoExtension);

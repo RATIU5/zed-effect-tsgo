@@ -1,17 +1,14 @@
-id = "tsgo"
-name = "tsgo"
-description = "Native implementation of TypeScript compiler."
-version = "0.0.4"
+id = "effect-tsgo"
+name = "effect-tsgo"
+description = "Effect Language Service for TypeScript — Effect-TS diagnostics powered by @effect/tsgo."
+version = "0.0.1"
 schema_version = 1
-authors = ["Zed Industries <hello@zed.dev>"]
-repository = "https://github.com/zed-extensions/tsgo"
+authors = ["Zed Industries <hello@zed.dev>", "RATIU5"]
+repository = "https://github.com/RATIU5/zed-effect-tsgo"
 
-
-[language_servers.tsgo]
-name = "tsgo"
-# TSGo determines ScriptKind from LSP languageId (textDocument/didOpen).
-# ScriptKind enum definition: https://github.com/microsoft/typescript-go/blob/main/internal/parser/parser.go (search for "type ScriptKind")
-# Panic location (initializeState): https://github.com/microsoft/typescript-go/blob/main/internal/parser/parser.go#L210
+[language_servers.effect-tsgo]
+name = "effect-tsgo"
+# effect-tsgo determines ScriptKind from LSP languageId (textDocument/didOpen).
 # Maps Zed's language names to standard LSP languageId values:
 #   typescript -> ScriptKindTS, typescriptreact -> ScriptKindTSX,
 #   javascript -> ScriptKindJS, javascriptreact -> ScriptKindJSX
