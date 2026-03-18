@@ -19,16 +19,61 @@ This extension integrates `@effect/tsgo` — the Effect Language Service fork of
 >
 > _Source: [Microsoft Developer Blog](https://devblogs.microsoft.com/typescript/typescript-native-port/)_
 
-## Prerequisites
+## Getting Started with Effect v4 in Zed
 
-This extension only manages the LSP binary. For Effect diagnostics to appear, your project must also be configured with the `@effect/language-service` TypeScript plugin. Run the interactive setup in your project directory:
+If you're coming from Effect land and want Effect diagnostics in Zed, here's what you need to know:
 
-```bash
-npx @effect/tsgo setup
-npm install
+**You do not need to run `npx @effect/tsgo setup` or `effect-tsgo patch`.** Those commands are part of the VS Code workflow, which works differently by patching the `@typescript/native-preview` binary. The Zed extension downloads and runs the `@effect/tsgo` binary directly — no project-level install required.
+
+### 1. Install the extension
+
+Open Zed's Extensions page, search for `effect-tsgo`, and install it. Zed will automatically download the latest `@effect/tsgo` binary when you first open a TypeScript project.
+
+### 2. Enable it for TypeScript in your Zed settings
+
+```json
+{
+  "languages": {
+    "TypeScript": {
+      "language_servers": ["effect-tsgo"]
+    }
+  }
+}
 ```
 
-The `setup` command configures your `tsconfig.json` and `package.json` automatically.
+### 3. (Optional) Configure Effect diagnostics in your project
+
+The LSP works out of the box with default diagnostic settings. If you want to customize which Effect rules are enabled or their severity, add the `@effect/language-service` plugin to your project's `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [
+      { "name": "@effect/language-service" }
+    ]
+  }
+}
+```
+
+You can also tune individual rule severities:
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "diagnosticSeverity": {
+          "floatingEffect": "error",
+          "missingEffectContext": "error"
+        }
+      }
+    ]
+  }
+}
+```
+
+That's it — no patching, no `npm install` of the LSP into your project.
 
 ## Installation
 
