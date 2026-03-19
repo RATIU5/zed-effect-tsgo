@@ -1,3 +1,6 @@
+// Originally based on the tsgo extension by Zed Industries, Inc.
+// Modified by RATIU5 — see git history for changes.
+
 use std::fs;
 use std::path::PathBuf;
 
