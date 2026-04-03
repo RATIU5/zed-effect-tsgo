@@ -1,35 +1,30 @@
-# effect-tsgo: Effect Language Service for Zed
+# effect-tsgo for Zed
 
-This extension integrates `@effect/tsgo` — the Effect Language Service fork of Microsoft's native Go-based TypeScript compiler — into the Zed editor, providing Effect-TS diagnostics alongside the performance benefits of the native TypeScript compiler.
+Zed extension for the Effect Language Service powered by `@effect/tsgo`.
 
-## Why `effect-tsgo`?
+## Requirements
 
-`@effect/tsgo` builds on `tsgo` (Microsoft's native Go port of TypeScript) and adds Effect-TS-specific diagnostics via the `@effect/language-service` plugin. You get:
+This extension starts the language server binary for Zed. You still need to set up your project for `@effect/tsgo` itself.
 
-- **Effect-TS diagnostics** — Effect-specific rules and hints surfaced directly in the editor
-- **Faster compilation** — up to 10x speed improvements from the native Go compiler
-- **Reduced memory usage** — optimized memory handling in native execution
-- **Improved editor performance** — faster IntelliSense and language services
+Run the upstream setup command in your project:
 
-> _Example Benchmarks (tsgo baseline)_:
->
-> - **VS Code**: 77.8s → 7.5s (10.4x speedup)
-> - **Playwright**: 11.1s → 1.1s (10.1x speedup)
-> - **TypeORM**: 17.5s → 1.3s (13.5x speedup)
->
-> _Source: [Microsoft Developer Blog](https://devblogs.microsoft.com/typescript/typescript-native-port/)_
+```sh
+npx @effect/tsgo setup
+```
 
-## Getting Started with Effect v4 in Zed
+That setup handles the project-side requirements from the `@effect/tsgo` README, including:
 
-If you're coming from Effect land and want Effect diagnostics in Zed, here's what you need to know:
+- adding `@effect/tsgo`
+- configuring `tsconfig.json` for the Effect language service plugin
+- guiding any additional editor-related setup
 
-**You do not need to run `npx @effect/tsgo setup` or `effect-tsgo patch`.** Those commands are part of the VS Code workflow, which works differently by patching the `@typescript/native-preview` binary. The Zed extension downloads and runs the `@effect/tsgo` binary directly — no project-level install required.
+You currently still need the standard native TypeScript install alongside `@effect/tsgo`:
 
-### 1. Install the extension
+```sh
+npm install -D @typescript/native-preview
+```
 
-Open Zed's Extensions page, search for `effect-tsgo`, and install it. Zed will automatically download the latest `@effect/tsgo` binary when you first open a TypeScript project.
-
-### 2. Enable it for TypeScript in your Zed settings
+## Enable In Zed
 
 ```json
 {
@@ -40,77 +35,18 @@ Open Zed's Extensions page, search for `effect-tsgo`, and install it. Zed will a
   }
 }
 ```
-
-### 3. (Optional) Configure Effect diagnostics in your project
-
-The LSP works out of the box with default diagnostic settings. If you want to customize which Effect rules are enabled or their severity, add the `@effect/language-service` plugin to your project's `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "plugins": [
-      { "name": "@effect/language-service" }
-    ]
-  }
-}
-```
-
-You can also tune individual rule severities:
-
-```json
-{
-  "compilerOptions": {
-    "plugins": [
-      {
-        "name": "@effect/language-service",
-        "diagnosticSeverity": {
-          "floatingEffect": "error",
-          "missingEffectContext": "error"
-        }
-      }
-    ]
-  }
-}
-```
-
-That's it — no patching, no `npm install` of the LSP into your project.
-
-## Installation
-
-1. Open Zed's Extensions page.
-2. Search for `effect-tsgo` and install the extension.
 
 ## Configuration
 
-### Basic Setup
+The extension resolves the server binary in this order:
 
-Enable `effect-tsgo` in your Zed settings:
+1. `lsp.effect-tsgo.settings.binary.path`
+2. `lsp.effect-tsgo.settings.package_version`
+3. latest `@effect/tsgo` from npm
 
-```json
-{
-  "languages": {
-    "TypeScript": {
-      "language_servers": ["effect-tsgo"]
-    }
-  }
-}
-```
+Important: the executable name is `tsgo`, not `effect-tsgo`.
 
-You can also use `effect-tsgo` in tandem with other language servers. Zed will use `effect-tsgo` for features it supports and fall back to the next server in the list:
-
-```json
-{
-  "languages": {
-    "TypeScript": {
-      "language_servers": ["effect-tsgo", "vtsls"]
-    }
-  }
-}
-```
-
-### Pinning a Package Version
-
-By default, the extension installs and uses the latest version of `@effect/tsgo` from npm. To pin a specific version:
+### Pin A Package Version
 
 ```json
 {
@@ -124,8 +60,39 @@ By default, the extension installs and uses the latest version of `@effect/tsgo`
 }
 ```
 
-This is useful for ensuring consistent behavior across a team or avoiding automatic updates.
+### Use A Local Binary
 
-## Status
+Prefer the real native `tsgo` binary, not the `effect-tsgo` CLI name.
 
-This extension is in early development. Contributions and feedback are welcome at [https://github.com/RATIU5/zed-effect-tsgo](https://github.com/RATIU5/zed-effect-tsgo).
+```json
+{
+  "lsp": {
+    "effect-tsgo": {
+      "settings": {
+        "binary": {
+          "path": "/absolute/path/to/node_modules/@effect/tsgo-darwin-arm64/lib/tsgo"
+        }
+      }
+    }
+  }
+}
+```
+
+### Use Zed's Raw Binary Override
+
+If you intentionally use Zed's built-in `lsp.effect-tsgo.binary.path`, Zed bypasses the extension wrapper. In that mode you must point at `tsgo` and provide the startup arguments yourself.
+
+```json
+{
+  "lsp": {
+    "effect-tsgo": {
+      "binary": {
+        "path": "./node_modules/.bin/tsgo",
+        "arguments": ["--lsp", "--stdio"]
+      }
+    }
+  }
+}
+```
+
+Use this raw override only when you want Zed to launch the command directly from the worktree.
