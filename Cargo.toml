@@ -1,5 +1,5 @@
 [package]
-name = "effect-tsgo"
+name = "effect-language-service-tsgo"
 version = "0.0.1"
 edition = "2024"
 

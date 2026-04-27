@@ -1,4 +1,4 @@
-# effect-tsgo for Zed
+# Effect Language Service (tsgo) for Zed
 
 Zed extension for the Effect Language Service powered by `@effect/tsgo`.
 
