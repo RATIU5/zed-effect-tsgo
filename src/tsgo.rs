@@ -4,9 +4,6 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-#[cfg(unix)]
-use std::os::unix::fs::PermissionsExt;
-
 use zed_extension_api::{self as zed, LanguageServerId, Result, settings::LspSettings};
 
 struct EffectTsgoExtension {
@@ -139,44 +136,22 @@ impl EffectTsgoExtension {
             ));
         }
 
-        #[cfg(unix)]
-        {
-            if metadata.permissions().mode() & 0o111 == 0 {
-                let path_str = path.to_str().ok_or_else(|| {
-                    format!(
-                        "{} at {} is not valid UTF-8, so it cannot be made executable.",
-                        source_description,
-                        path.display()
-                    )
-                })?;
+        let path_str = path.to_str().ok_or_else(|| {
+            format!(
+                "{} at {} is not valid UTF-8, so it cannot be made executable.",
+                source_description,
+                path.display()
+            )
+        })?;
 
-                zed::make_file_executable(path_str).map_err(|err| {
-                    format!(
-                        "{} at {} is not executable and could not be updated: {}",
-                        source_description,
-                        path.display(),
-                        err
-                    )
-                })?;
-
-                let updated_metadata = fs::metadata(path).map_err(|err| {
-                    format!(
-                        "{} at {} could not be re-checked after updating permissions: {}",
-                        source_description,
-                        path.display(),
-                        err
-                    )
-                })?;
-
-                if updated_metadata.permissions().mode() & 0o111 == 0 {
-                    return Err(format!(
-                        "{} at {} is not executable.",
-                        source_description,
-                        path.display()
-                    ));
-                }
-            }
-        }
+        zed::make_file_executable(path_str).map_err(|err| {
+            format!(
+                "{} at {} could not be made executable: {}",
+                source_description,
+                path.display(),
+                err
+            )
+        })?;
 
         Ok(())
     }
