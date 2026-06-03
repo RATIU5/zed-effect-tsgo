@@ -22,11 +22,9 @@ struct EffectTsgoSettings {
 impl EffectTsgoSettings {
     fn from_lsp_settings(settings: &LspSettings) -> Self {
         let binary_path = settings
-            .settings
+            .binary
             .as_ref()
-            .and_then(|s| s.get("binary"))
-            .and_then(|binary| binary.get("path"))
-            .and_then(|v| v.as_str())
+            .and_then(|binary| binary.path.as_deref())
             .map(|s| s.trim().to_string())
             .filter(|path| !path.is_empty());
 

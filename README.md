@@ -6,6 +6,17 @@ Zed extension for the Effect Language Service powered by `@effect/tsgo`.
 
 This extension starts the language server binary for Zed. You still need to set up your project for `@effect/tsgo` itself.
 
+When installing this as a dev extension, Zed compiles the extension for `wasm32-wasip2`.
+Install that Rust target first:
+
+```sh
+rustup target add wasm32-wasip2
+```
+
+If the target is installed but Zed still reports `can't find crate for core` or `std`,
+make sure Zed is using the rustup `cargo` and `rustc`, not another Rust installation such as Homebrew.
+Putting `~/.cargo/bin` before `/opt/homebrew/bin` in `PATH` is usually enough.
+
 Run the upstream setup command in your project:
 
 ```sh
@@ -40,7 +51,7 @@ npm install -D @typescript/native-preview
 
 The extension resolves the server binary in this order:
 
-1. `lsp.effect-tsgo.settings.binary.path`
+1. `lsp.effect-tsgo.binary.path`
 2. `lsp.effect-tsgo.settings.package_version`
 3. latest `@effect/tsgo` from npm
 
@@ -68,31 +79,10 @@ Prefer the real native `tsgo` binary, not the `effect-tsgo` CLI name.
 {
   "lsp": {
     "effect-tsgo": {
-      "settings": {
-        "binary": {
-          "path": "/absolute/path/to/node_modules/@effect/tsgo-darwin-arm64/lib/tsgo"
-        }
-      }
-    }
-  }
-}
-```
-
-### Use Zed's Raw Binary Override
-
-If you intentionally use Zed's built-in `lsp.effect-tsgo.binary.path`, Zed bypasses the extension wrapper. In that mode you must point at `tsgo` and provide the startup arguments yourself.
-
-```json
-{
-  "lsp": {
-    "effect-tsgo": {
       "binary": {
-        "path": "./node_modules/.bin/tsgo",
-        "arguments": ["--lsp", "--stdio"]
+        "path": "/absolute/path/to/node_modules/@effect/tsgo-darwin-arm64/lib/tsgo"
       }
     }
   }
 }
 ```
-
-Use this raw override only when you want Zed to launch the command directly from the worktree.
