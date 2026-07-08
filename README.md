@@ -17,13 +17,19 @@ If the target is installed but Zed still reports `can't find crate for core` or 
 make sure Zed is using the rustup `cargo` and `rustc`, not another Rust installation such as Homebrew.
 Putting `~/.cargo/bin` before `/opt/homebrew/bin` in `PATH` is usually enough.
 
-You currently still need the standard native TypeScript install alongside `@effect/tsgo`:
+You also need a native TypeScript install alongside `@effect/tsgo`. As of TypeScript 7.0 stable, this is just the regular `typescript` package:
+
+```sh
+npm install -D typescript@7
+```
+
+Nightlies still ship under `@typescript/native-preview` if you want the bleeding edge instead:
 
 ```sh
 npm install -D @typescript/native-preview
-# or
-npm install -D @typescript/rc
 ```
+
+`@effect/tsgo` detects whichever one is installed.
 
 You also need the Effect language service plugin configured in your `tsconfig.json` (see [Recommended Setup](#recommended-setup) below).
 
