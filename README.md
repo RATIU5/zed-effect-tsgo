@@ -108,7 +108,7 @@ The extension resolves the server binary in this order:
 2. `lsp.effect-tsgo.settings.package_version`
 3. latest `@effect/tsgo` from npm
 
-Important: the executable name is `tsgo`, not `effect-tsgo`.
+Important: the shipped executable is now `tsc` (matching TypeScript-Go upstream). Older `@effect/tsgo` packages still ship `tsgo`; this extension accepts either. Prefer the real native binary, not the `effect-tsgo` CLI name.
 
 ### Pin A Package Version
 
@@ -126,14 +126,14 @@ Important: the executable name is `tsgo`, not `effect-tsgo`.
 
 ### Use A Local Binary
 
-Prefer the real native `tsgo` binary, not the `effect-tsgo` CLI name.
+Prefer the real native `tsc` binary (or `tsgo` on older packages), not the `effect-tsgo` CLI name.
 
 ```json
 {
   "lsp": {
     "effect-tsgo": {
       "binary": {
-        "path": "/absolute/path/to/node_modules/@effect/tsgo-darwin-arm64/lib/tsgo"
+        "path": "/absolute/path/to/node_modules/@effect/tsgo-darwin-arm64/lib/tsc"
       }
     }
   }
