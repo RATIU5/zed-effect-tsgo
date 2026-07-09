@@ -98,22 +98,31 @@ impl EffectTsgoExtension {
         }
 
         let (platform, _) = zed::current_platform();
-        let binary_name = match platform {
-            zed::Os::Windows => "tsgo.exe",
-            _ => "tsgo",
+        // Upstream TypeScript-Go renamed the shipped binary to `tsc`.
+        // Prefer that name, but keep `tsgo` as a fallback for older packages.
+        let candidate_names: &[&str] = match platform {
+            zed::Os::Windows => &["tsc.exe", "tsgo.exe"],
+            _ => &["tsc", "tsgo"],
         };
 
-        let binary_path = package_path.join("lib").join(binary_name);
-
-        if !binary_path.exists() {
-            return Err(format!(
-                "Native binary for {} was not found at {}. The platform package may be missing or corrupted.",
-                platform_package,
-                binary_path.display()
-            ));
+        let mut missing = Vec::new();
+        for binary_name in candidate_names {
+            let binary_path = package_path.join("lib").join(binary_name);
+            if binary_path.exists() {
+                return Ok(binary_path);
+            }
+            missing.push(binary_path);
         }
 
-        Ok(binary_path)
+        Err(format!(
+            "Native binary for {} was not found (tried {}). The platform package may be missing or corrupted.",
+            platform_package,
+            missing
+                .iter()
+                .map(|path| path.display().to_string())
+                .collect::<Vec<_>>()
+                .join(", ")
+        ))
     }
 
     fn ensure_binary_is_usable(path: &Path, source_description: &str) -> Result<()> {

@@ -1,7 +1,7 @@
 id = "effect-language-service-tsgo"
 name = "Effect Language Service (tsgo)"
 description = "Effect Language Service for TypeScript — Effect-TS diagnostics powered by @effect/tsgo."
-version = "0.0.5"
+version = "0.0.6"
 schema_version = 1
 authors = ["RATIU5"]
 repository = "https://github.com/RATIU5/zed-effect-tsgo"
